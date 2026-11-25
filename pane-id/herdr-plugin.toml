@@ -1,0 +1,29 @@
+id = "kuhku.pane-id"
+name = "Pane ID"
+version = "0.1.0"
+min_herdr_version = "0.9.5"
+description = "各ペインに自分のペインIDを表示用の値（$id）として付け、agents 欄に出せるようにする。"
+platforms = ["linux", "macos"]
+
+# 起動時に今あるペインへ付ける
+[[startup]]
+command = ["python3", "tag.py"]
+
+# 新しいペインと、移動で ID が変わったペインへ付け直す
+[[events]]
+on = "pane.created"
+command = ["python3", "tag.py"]
+
+[[events]]
+on = "pane.moved"
+command = ["python3", "tag.py"]
+
+[[events]]
+on = "tab.moved"
+command = ["python3", "tag.py"]
+
+[[actions]]
+id = "retag"
+title = "ペインIDを付け直す"
+contexts = ["global"]
+command = ["python3", "tag.py"]
