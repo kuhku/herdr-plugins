@@ -6,6 +6,7 @@
 
 [English](README.md) &nbsp;·&nbsp; [日本語](README.ja.md)
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-222222?style=flat-square)](LICENSE)
 [![herdr](https://img.shields.io/badge/herdr-0.9.5+-555555?style=flat-square)](https://herdr.dev)
 [![Plugins](https://img.shields.io/badge/plugins-1-888888?style=flat-square)](#plugins)
 [![Platforms](https://img.shields.io/badge/platforms-macOS_·_Linux-aaaaaa?style=flat-square)](#install)
