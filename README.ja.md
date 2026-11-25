@@ -23,7 +23,7 @@ herdr ではコーディングエージェントを何体も並べて動かし�
 
 | | プラグイン | できること |
 |---|---|---|
-| 01 | [**pane-id**](#pane-id) | agents 欄のペイン名の隣に各ペインの ID を出す。フォーカス中のペインの ID はキー 1 つでコピーできる |
+| 01 | [**pane-id**](#pane-id) | エージェントのペインの ID を枠線のラベルと agents 欄に出す。フォーカス中のペインの ID はキー 1 つでコピーできる |
 
 <br>
 
@@ -41,21 +41,23 @@ herdr plugin install kuhku/herdr-plugins/pane-id
 
 > `herdr pane send-text` に渡す ID を、`herdr pane list` を開かずに。
 
-各ペインに自分の ID（`wQ:pSF` など）を、表示用の値 `id` として付けます。agents 欄の行に `$id` を書くと、ペイン名の隣に ID が出ます。
+エージェントが動いているペインの表示名に、そのペインの ID を足します。枠線のラベルと agents 欄は次のように見えます。
 
-- **いつも最新**: 起動時と、ペインの作成・移動、タブの移動のたびに、全ペインへ付け直します。ペインを別のワークスペースへ移すと ID が変わるためです。
+```text
+┌ claude ❯ wQ:pSF ──────────────────────
+```
+
+エージェントの有無にかかわらず、全ペインに ID を表示用の値 `id` としても付けます。agents 欄の行に `$id` と書けば、好きな位置に出せます。
+
+- **いつも最新**: 起動時と、ペインの作成・移動、エージェントの検出、タブの移動のたびに、全ペインへ付け直します。ペインを別のワークスペースへ移すと ID が変わるためです。
 - **手動でも直せる**: ずれたときは `herdr plugin action invoke kuhku.pane-id.retag` で付け直せます。
-- **表示だけ**: 書き込むのは表示用の値だけで、エージェントの状態やペイン名には触れません。
+- **表示だけ**: 書き込むのは表示用の値だけで、エージェントの状態や手で付けたペイン名には触れません。ペイン名を付けたペインは、枠線のラベルにペイン名が出ます。
 
-キーの割り当てと agents 欄の並びはプラグインから配れないので、`~/.config/herdr/config.toml` に書きます。
+枠線のラベルとコピーのキーは、プラグインからは設定できないので、`~/.config/herdr/config.toml` に書きます。
 
 ```toml
-[ui.sidebar.agents]
-rows = [
-  ["state_icon", "workspace", "tab"],
-  ["pane", "$id"],
-  ["agent"],
-]
+[ui]
+show_agent_labels_on_pane_borders = true
 
 # フォーカス中のペインの ID をクリップボードへコピーする（macOS）
 [[keys.command]]
@@ -65,7 +67,7 @@ command = "printf '%s' \"$HERDR_ACTIVE_PANE_ID\" | /usr/bin/pbcopy"
 description = "フォーカス中のペインIDをコピー"
 ```
 
-agents 欄で行を選ぶとそのペインにフォーカスが移るので、続けて `prefix+y` を押します。Linux では `/usr/bin/pbcopy` を `wl-copy` か `xclip -selection clipboard` に替えてください。
+エージェントの ID をコピーするときは、agents 欄でその行を選び（ペインにフォーカスが移ります）、続けて `prefix+y` を押します。Linux では `/usr/bin/pbcopy` を `wl-copy` か `xclip -selection clipboard` に替えてください。
 
 <br>
 

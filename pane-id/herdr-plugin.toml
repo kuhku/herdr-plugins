@@ -19,6 +19,10 @@ on = "pane.moved"
 command = ["python3", "tag.py"]
 
 [[events]]
+on = "pane.agent_detected"
+command = ["python3", "tag.py"]
+
+[[events]]
 on = "tab.moved"
 command = ["python3", "tag.py"]
 

@@ -1,6 +1,10 @@
-"""全ペインに、自分のペインIDを表示用トークン id として付ける。
+"""全ペインに、自分のペインIDを表示用に付ける。
 
-agents 欄の行に "$id" を書くと表示される。何度実行しても結果は同じ。
+- トークン id: agents 欄の行に "$id" と書くと出る
+- エージェントの表示名: エージェントが動いているペインでは「claude ❯ wQ:pSF」にする。
+  枠線の左上のラベルと agents 欄の agent の行に出る
+
+何度実行しても結果は同じ。
 """
 
 import json
@@ -10,6 +14,19 @@ import sys
 
 HERDR = os.environ.get("HERDR_BIN_PATH") or "herdr"
 SOURCE = "kuhku.pane-id"
+SEPARATOR = " ❯ "
+
+
+def metadata_args(pane: dict) -> list[str]:
+    pane_id = pane["pane_id"]
+    args = ["--token", f"id={pane_id}"]
+    agent = pane.get("agent")
+    if agent:
+        args += ["--display-agent", f"{agent}{SEPARATOR}{pane_id}"]
+    else:
+        # エージェントが終わったペインに前の表示名を残さない
+        args += ["--clear-display-agent"]
+    return args
 
 
 def main() -> int:
@@ -19,7 +36,7 @@ def main() -> int:
     for pane in panes:
         pane_id = pane["pane_id"]
         result = subprocess.run(
-            [HERDR, "pane", "report-metadata", pane_id, "--source", SOURCE, "--token", f"id={pane_id}"],
+            [HERDR, "pane", "report-metadata", pane_id, "--source", SOURCE, *metadata_args(pane)],
             capture_output=True,
             text=True,
         )

@@ -24,7 +24,7 @@ once that crowd gets large: a name you can't see, an ID you have to look up.
 
 | | Plugin | What it does |
 |---|---|---|
-| 01 | [**pane-id**](#pane-id) | Shows every pane's ID next to its name in the agents sidebar, and copies the focused pane's ID with one key |
+| 01 | [**pane-id**](#pane-id) | Shows every agent pane's ID in its border label and the agents sidebar, and copies the focused pane's ID with one key |
 
 <br>
 
@@ -42,23 +42,27 @@ Update later with `herdr plugin update`. Remove with `herdr plugin uninstall kuh
 
 > The ID you pass to `herdr pane send-text`, without opening `herdr pane list`.
 
-pane-id tags each pane with its own ID (like `wQ:pSF`) as a display token named `id`.
-Add `$id` to a sidebar row and the ID appears beside the pane name.
+pane-id writes each agent pane's ID into its display name, so the border label and the
+agents sidebar read like this:
 
-- **Always current**: re-tags every pane at startup and whenever a pane is created or moved, or a tab is moved.
+```text
+┌ claude ❯ wQ:pSF ──────────────────────
+```
+
+Every pane, agent or not, also gets the ID as a display token named `id`, which you can put
+anywhere in a sidebar row as `$id`.
+
+- **Always current**: re-tags every pane at startup and whenever a pane is created or moved, an agent is detected, or a tab is moved.
   Moving a pane to another workspace gives it a new ID, so this matters.
 - **Manual fallback**: if anything drifts, run `herdr plugin action invoke kuhku.pane-id.retag`.
-- **Display only**: it writes nothing but a metadata token, so agent state and pane names stay untouched.
+- **Display only**: it writes display metadata only, so agent state and manual pane names stay untouched.
+  A manual pane name, when set, takes the border label instead.
 
-Plugins can't ship keybindings or sidebar layout, so add these to `~/.config/herdr/config.toml`:
+Turn on border labels and the copy key in `~/.config/herdr/config.toml` (plugins can't ship either):
 
 ```toml
-[ui.sidebar.agents]
-rows = [
-  ["state_icon", "workspace", "tab"],
-  ["pane", "$id"],
-  ["agent"],
-]
+[ui]
+show_agent_labels_on_pane_borders = true
 
 # Copy the focused pane's ID to the clipboard (macOS)
 [[keys.command]]
@@ -68,7 +72,7 @@ command = "printf '%s' \"$HERDR_ACTIVE_PANE_ID\" | /usr/bin/pbcopy"
 description = "Copy focused pane ID"
 ```
 
-Pick an agent row in the sidebar (that focuses its pane), then press `prefix+y`.
+To copy an agent's ID, pick its row in the sidebar (that focuses its pane), then press `prefix+y`.
 On Linux, swap `/usr/bin/pbcopy` for `wl-copy` or `xclip -selection clipboard`.
 
 <br>
